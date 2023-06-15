@@ -13,7 +13,7 @@ public class OrderItem : Entity
         );
 
         Product = product;
-        Price = Product != null ? product.Price : 0;
+        Price = product?.Price ?? 0;
         Quantity = quantity;
     }
 
