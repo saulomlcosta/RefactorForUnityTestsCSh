@@ -1,11 +1,18 @@
-﻿using Store.Domain.Enums;
+﻿using Flunt.Validations;
+using Store.Domain.Enums;
 
 namespace Store.Domain.Entities;
-public class Order
+public class Order : Entity
 {
     private IList<OrderItem> _orderItems;
     public Order(Customer customer, decimal deliveryFee, Discount discount)
     {
+        AddNotifications(
+            new Contract<Order>()
+                .Requires()
+                .IsNotNull(customer, "Customer", "Cliente inválido")
+        );
+
         Customer = customer;
         Date = DateTime.Now;
         Number = Guid.NewGuid().ToString().Replace("-", "")[..8].ToUpper(); ;
@@ -25,7 +32,8 @@ public class Order
     public void AddItem(Product product, int quantity)
     {
         var item = new OrderItem(product, quantity);
-        _orderItems.Add(item);
+        if (item.IsValid)
+            _orderItems.Add(item);
     }
 
     public decimal Total()
