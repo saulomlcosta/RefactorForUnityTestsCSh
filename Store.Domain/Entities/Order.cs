@@ -21,6 +21,7 @@ public class Order : Entity
         Discount = discount;
         _orderItems = new List<OrderItem>();
     }
+
     public Customer Customer { get; private set; }
     public DateTime Date { get; private set; }
     public string Number { get; private set; }
