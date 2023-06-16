@@ -2,7 +2,7 @@ using Store.Domain.Entities;
 using Store.Domain.Enums;
 using Store.Domain.Queries;
 
-namespace Store.Tests;
+namespace Store.Tests.Queries;
 
 [TestClass]
 public class ProductQueriesTests
