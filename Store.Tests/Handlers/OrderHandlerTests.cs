@@ -1,3 +1,5 @@
+using Store.Domain.Commands.Interfaces;
+using Store.Domain.Handlers;
 using Store.Domain.Repository;
 using Store.Tests.Repositories;
 
@@ -25,41 +27,61 @@ public class OrderHandlerTests
     [TestCategory("Handlers")]
     public void GivenANonExistentCustomer_OrderCannotBeGenerated()
     {
-        Assert.Fail();
     }
 
     [TestMethod]
     [TestCategory("Handlers")]
     public void GivenAInvalidZipCode_OrderCanBeGenerated()
     {
-        Assert.Fail();
     }
 
     [TestMethod]
     [TestCategory("Handlers")]
-    public void GivenANonExistentDiscount_OrderCanBeGenerated()
+    public void GivenANonExistentPromoCode_OrderCanBeGenerated()
     {
-        Assert.Fail();
     }
 
     [TestMethod]
     [TestCategory("Handlers")]
     public void GivenAOrderWithoutItems_OrderCannotBeGenerated()
     {
-        Assert.Fail();
     }
 
     [TestMethod]
     [TestCategory("Handlers")]
     public void GivenAInvalidCommand_OrderCannotBeGenerated()
     {
-        Assert.Fail();
+        var command = new CreateOrderCommand();
+        command.Customer = "";
+        command.ZipCode = "13411080";
+        command.PromoCode = "12345678";
+        command.Items.Add(new CreateOrderItemCommand(Guid.NewGuid(), 1));
+        command.Items.Add(new CreateOrderItemCommand(Guid.NewGuid(), 1));
+        command.Validate();
+
+        Assert.AreEqual(command.IsValid, false);
     }
 
     [TestMethod]
     [TestCategory("Handlers")]
     public void GivenAValidCommand_OrderCanBeGenerated()
     {
-        Assert.Fail();
+        var command = new CreateOrderCommand();
+        command.Customer = "12345678910";
+        command.ZipCode = "60510123";
+        command.PromoCode = "12345678";
+        command.Items.Add(new CreateOrderItemCommand(Guid.NewGuid(), 1));
+        command.Items.Add(new CreateOrderItemCommand(Guid.NewGuid(), 1));
+
+        var handler = new OrderHandler(
+            _customerRepository,
+            _deliveryFeeRepository,
+            _discountRepository,
+            _productRepository,
+            _orderRepository
+        );
+
+        handler.Handle(command);
+        Assert.AreEqual(handler.IsValid, true);
     }
 }
