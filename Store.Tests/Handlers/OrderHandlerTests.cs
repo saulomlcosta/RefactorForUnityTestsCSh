@@ -23,7 +23,43 @@ public class OrderHandlerTests
 
     [TestMethod]
     [TestCategory("Handlers")]
-    public void GivenANonExistsCustomer_OrderCannotBeGenerated()
+    public void GivenANonExistentCustomer_OrderCannotBeGenerated()
     {
+        Assert.Fail();
+    }
+
+    [TestMethod]
+    [TestCategory("Handlers")]
+    public void GivenAInvalidZipCode_OrderCanBeGenerated()
+    {
+        Assert.Fail();
+    }
+
+    [TestMethod]
+    [TestCategory("Handlers")]
+    public void GivenANonExistentDiscount_OrderCanBeGenerated()
+    {
+        Assert.Fail();
+    }
+
+    [TestMethod]
+    [TestCategory("Handlers")]
+    public void GivenAOrderWithoutItems_OrderCannotBeGenerated()
+    {
+        Assert.Fail();
+    }
+
+    [TestMethod]
+    [TestCategory("Handlers")]
+    public void GivenAInvalidCommand_OrderCannotBeGenerated()
+    {
+        Assert.Fail();
+    }
+
+    [TestMethod]
+    [TestCategory("Handlers")]
+    public void GivenAValidCommand_OrderCanBeGenerated()
+    {
+        Assert.Fail();
     }
 }
