@@ -6,19 +6,15 @@ namespace Store.Tests;
 [TestClass]
 public class OrderTests
 {
+    private readonly Customer _customer = new Customer("Saulo Costa", "sulomlcosta10gmail.com");
+    private readonly Product _product = new Product("Product 1", 10, true);
+    private readonly Discount _discount = new Discount(10, DateTime.Now.AddDays(5));
+
     [TestMethod]
     [TestCategory("Domain")]
     public void GivenANewValidOrder_ItShouldGenerateANumberWith8Characters()
     {
-        var customer = new Customer("Saulo", "saulomlcosta10@gmail.com");
-        var discount = new Discount(0, DateTime.UtcNow);
-        var product = new Product("MousePad", 20m, true);
-
-        var order = new Order(customer, 10.50m, discount);
-        order.AddItem(product, 2);
-        order.Pay(50.50m);
-
-        Assert.IsTrue(order.IsValid);
+        var order = new Order(_customer, 0, null);
         Assert.AreEqual(8, order.Number.Length);
     }
 
@@ -26,13 +22,7 @@ public class OrderTests
     [TestCategory("Domain")]
     public void GivenANewOrder_StatusShouldBeWaitingPayment()
     {
-        var customer = new Customer("Saulo", "saulomlcosta10@gmail.com");
-        var discount = new Discount(0, DateTime.UtcNow);
-        var product = new Product("MousePad", 20m, true);
-
-        var order = new Order(customer, 10.50m, discount);
-        order.AddItem(product, 2);
-
+        var order = new Order(_customer, 0, null);
         Assert.AreEqual(EOrderStatus.WaitingPayment, order.Status);
     }
 
@@ -40,14 +30,9 @@ public class OrderTests
     [TestCategory("Domain")]
     public void GivenAOrderPayment_StatusShouldBeWaitingDelivery()
     {
-        var customer = new Customer("Saulo", "saulomlcosta10@gmail.com");
-        var discount = new Discount(0, DateTime.UtcNow);
-        var product = new Product("MousePad", 20m, true);
-
-        var order = new Order(customer, 10.50m, discount);
-        order.AddItem(product, 2);
-        order.Pay(50.50m);
-
+        var order = new Order(_customer, 0, null);
+        order.AddItem(_product, 1);
+        order.Pay(10);
         Assert.AreEqual(EOrderStatus.WaitingDelivery, order.Status);
     }
 
@@ -55,28 +40,26 @@ public class OrderTests
     [TestCategory("Domain")]
     public void GivenACancelOrder_StatusShouldBeCanceled()
     {
-        var customer = new Customer("Saulo", "saulomlcosta10@gmail.com");
-        var discount = new Discount(0, DateTime.UtcNow);
-        var product = new Product("MousePad", 20m, true);
-
-        var order = new Order(customer, 10.50m, discount);
-        order.AddItem(product, 2);
+        var order = new Order(_customer, 0, null);
         order.Cancel();
-
         Assert.AreEqual(EOrderStatus.Canceled, order.Status);
     }
 
     [TestMethod]
     [TestCategory("Domain")]
-    public void GivenANewItemWithoutAProduct_ProductCanNotBeAdd()
+    public void GivenANewItemWithoutAProduct_ProductCannotBeAdd()
     {
-        var customer = new Customer("Saulo", "saulomlcosta10@gmail.com");
-        var discount = new Discount(0, DateTime.UtcNow);
-        var product = new Product("MousePad", 20m, true);
+        var order = new Order(_customer, 0, null);
+        order.AddItem(null, 10);
+        Assert.AreEqual(order.Items.Count, 0);
+    }
 
-        var order = new Order(customer, 10.50m, discount);
-        order.AddItem(product, 0);
-
-        Assert.IsFalse(order.IsValid);
+    [TestMethod]
+    [TestCategory("Domain")]
+    public void GivenANewItemWithQuantityZeroOrMinus_ProductCannotBeAdd()
+    {
+        var order = new Order(_customer, 0, null);
+        order.AddItem(_product, 0);
+        Assert.AreEqual(order.Items.Count, 0);
     }
 }
