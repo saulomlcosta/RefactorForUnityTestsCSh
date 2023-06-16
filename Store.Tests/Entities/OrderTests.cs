@@ -62,4 +62,23 @@ public class OrderTests
         order.AddItem(_product, 0);
         Assert.AreEqual(order.Items.Count, 0);
     }
+
+    [TestMethod]
+    [TestCategory("Domain")]
+    public void GivenANewValidOrder_OrderTotalHasToBe50()
+    {
+        var order = new Order(_customer, 20, null);
+        order.AddItem(_product, 3);
+        Assert.AreEqual(order.Total(), 50);
+    }
+
+    [TestMethod]
+    [TestCategory("Domain")]
+    public void GivenExpiredDiscount_OrderTotalHasToBe60()
+    {
+        var discount = new Discount(10, DateTime.Now.AddDays(-1));
+        var order = new Order(_customer, 20, discount);
+        order.AddItem(_product, 4);
+        Assert.AreEqual(order.Total(), 50);
+    }
 }
