@@ -74,11 +74,37 @@ public class OrderTests
 
     [TestMethod]
     [TestCategory("Domain")]
-    public void GivenExpiredDiscount_OrderTotalHasToBe60()
+    public void GivenAExpiredDiscount_OrderTotalHasToBe60()
     {
-        var discount = new Discount(10, DateTime.Now.AddDays(-1));
-        var order = new Order(_customer, 20, discount);
+        var expiredDiscount = new Discount(10, DateTime.Now.AddDays(-1));
+        var order = new Order(_customer, 20, expiredDiscount);
+        order.AddItem(_product, 4);
+        Assert.AreEqual(order.Total(), 60);
+    }
+
+    [TestMethod]
+    [TestCategory("Domain")]
+    public void GivenA10BOXDiscount_OrderTotalHasToBe50()
+    {
+        var order = new Order(_customer, 20, _discount);
         order.AddItem(_product, 4);
         Assert.AreEqual(order.Total(), 50);
+    }
+
+    [TestMethod]
+    [TestCategory("Domain")]
+    public void GivenADeliveryFee10_OrderTotalHasToBe60()
+    {
+        var order = new Order(_customer, 10, _discount);
+        order.AddItem(_product, 5);
+        Assert.AreEqual(order.Total(), 50);
+    }
+
+    [TestMethod]
+    [TestCategory("Domain")]
+    public void GivenAOrderWithoutCustomer_OrderHasToBeInvalid()
+    {
+        var order = new Order(null, 10, _discount);
+        Assert.AreEqual(order.IsValid, false);
     }
 }
